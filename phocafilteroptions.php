@@ -7,12 +7,15 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
-use Joomla\Http\Response;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\HTML\HTMLHelper;
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport( 'joomla.plugin.plugin' );
 
-class plgSystemPhocaFilteroptions extends JPlugin
+class plgSystemPhocaFilteroptions extends CMSPlugin
 {
 
 	public function __construct(& $subject, $config) {
@@ -23,7 +26,7 @@ class plgSystemPhocaFilteroptions extends JPlugin
 
 	public function isActive() {
 
-		$app 					= JFactory::getApplication();
+		$app 					= Factory::getApplication();
 		$option 				= $app->input->get('option', '', 'string');
 		$view 					= $app->input->get('view', '', 'string');
 		$layout 				= $app->input->get('layout', '', 'string');
@@ -54,11 +57,10 @@ class plgSystemPhocaFilteroptions extends JPlugin
 			return '';
 		}
 
-		// Add JS
-		$document	= JFactory::getDocument();
-		$document->addScript(JURI::root(true).'/media/plg_system_phocafilteroptions/js/config-filter-options.min.js');
-		//$document->addScript(JURI::root(true).'/media/plg_system_phocafilteroptions/js/config-filter-options.es6.js');
-		JHtml::stylesheet('media/plg_system_phocafilteroptions/css/filter-options.css' );
+		HTMLHelper::_('script', 'media/plg_system_phocafilteroptions/js/config-filter-options.min.js', array('version' => 'auto'));
+		//HTMLHelper::_('script', 'media/plg_system_phocafilteroptions/js/config-filter-options.es6.js', array('version' => 'auto'));
+		HTMLHelper::_('stylesheet', 'media/plg_system_phocafilteroptions/css/filter-options.css', array('version' => 'auto'));
+
 		return true;
 	}
 
@@ -70,16 +72,15 @@ class plgSystemPhocaFilteroptions extends JPlugin
 			return '';
 		}
 
-		$app 					= JFactory::getApplication();
-		$option 				= $app->input->get('option', '', 'string');
+		$app 	= Factory::getApplication();
+		$option = $app->input->get('option', '', 'string');
 
 		// Add HTML
 		$buffer = $app->getBody();
 
 		if ($option == 'com_config') {
-			$addHtml = '<div class="row ph-filter-options config">'
-					  //.'<div class="col-md-2"></div>'
-					  .'<div class="col-md-12"><form class="form-inline"><input class="form-control" type="text" id="filterOptionsInput" placeholder="'.JText::_('PLG_SYSTEM_PHOCAFILTEROPTIONS_TYPE_FILTER_OPTIONS').'" /> <button type="button" id="filterOptionsClear" class="btn btn-primary" title="'. JText::_('JSEARCH_FILTER_CLEAR').'">'.JText::_('JSEARCH_FILTER_CLEAR').'</button></form></div>'
+			$addHtml = '<div class="ph-filter-options config">'
+					  .'<form class="form-inline"><input class="form-control" type="text" id="filterOptionsInput" placeholder="'.JText::_('PLG_SYSTEM_PHOCAFILTEROPTIONS_TYPE_FILTER_OPTIONS').'" /> <button type="button" id="filterOptionsClear" class="btn btn-primary" title="'. JText::_('JSEARCH_FILTER_CLEAR').'">'.JText::_('JSEARCH_FILTER_CLEAR').'</button></form>'
 				  .'</div>';
 		} else {
 			$addHtml = '<div class="ph-filter-options component '.$option.'">'
